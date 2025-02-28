@@ -76,7 +76,12 @@ int main(int argc, char const *argv[])
 		sopa.matriz[i] = (char *)malloc(N * sizeof(char));
 		if (sopa.matriz[i]==NULL)
 		{
-			printf("Errorr");
+			printf("Error al asignar memoria para las filas de la matriz.\n");
+			for (int j = 0; j< i; ++j)
+			{
+				free(sopa.matriz[j]);
+			}
+			free(sopa.matriz);
 			return 1;
 		}
 	}
@@ -268,9 +273,13 @@ void insertarPalabraMedio(struct SopaLetras *sopa, char *palabra)
 	while(intentos--)
 	{
 		int direccion = rand() %3; // 0-hori, 1-verti, 2-diago
+		
+		int x= rand() % (sopa->N - len +1);
+		int y= rand() % (sopa->N -len +1);
+		/*
 		int x=rand() %  (sopa->N - (direccion==2? len:0));
 		int y=rand() %  (sopa->N - (direccion==2? len:0));
-
+		*/
 		if (espacioDispo(sopa, palabra, x,y,direccion))
 		{
 			for (int i = 0; i < len; ++i)
@@ -337,6 +346,7 @@ void agregarPalabra(struct Nodo **lista, char * palabra)
 
 	strcpy(nuevoNodo->palabra, palabra);
 	nuevoNodo->siguiente= *lista;
+	nuevoNodo->encontrada=false; //--------------
 	*lista= nuevoNodo;
 }
 
