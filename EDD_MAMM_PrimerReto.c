@@ -35,6 +35,7 @@ void rellenarEspacios(struct SopaLetras *sopa);
 void agregarPalabra(struct Nodo **lista, char * palabra);
 bool buscarPalabra(struct Nodo *lista, char *palabra);
 void imprimirLista(struct Nodo *lista);
+void exportarTablero(struct SopaLetras *sopa);
 
 int main(int argc, char const *argv[])
 {
@@ -139,7 +140,7 @@ int main(int argc, char const *argv[])
 			{
 				break;
 			}
-			
+
 			printf("Introduce la palabra a buscar: ");
 			scanf("%s", palabra_buscada);
 			convertirMayus(palabra_buscada);
@@ -156,7 +157,7 @@ int main(int argc, char const *argv[])
 		printf("Felicidades, no pensé que lo lograras xd🫵🏼😛\n");	
 	}else if(opcion==2)
 	{
-
+		exportarTablero(&sopa);
 	}else
 	{
 		printf("Opción invalida.😆\n");
@@ -318,4 +319,25 @@ void imprimirLista(struct Nodo *lista)
 		printf("%s\n", lista->palabra);
 		lista=lista->siguiente;
 	}
+}
+
+void exportarTablero(struct SopaLetras *sopa)
+{
+	FILE *archivo = fopen("sopa_de_letras.txt", "w");
+	if (archivo==NULL)
+	{
+		printf("Error al abrir el archivo para exportar el tablero.\n");
+		return;
+	}
+
+	for (int i = 0; i < sopa->N; ++i)
+	{
+		for (int j = 0; j < sopa->N; ++j)
+		{
+			fprintf(archivo, "%c  ", sopa->matriz[i][j]);
+		}
+		fprintf(archivo, "\n");
+	}
+	fclose(archivo);
+	printf("Tablero exportado en sopa_de_letras.txt\n");
 }
