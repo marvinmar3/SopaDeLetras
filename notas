@@ -1,0 +1,28 @@
+Inicialización y configuración:
+Incluir bibliotecas y definir constantes.
+Inicializar la semilla para números aleatorios.
+
+Interacción con el usuario:
+Solicitar el tamaño del tablero.
+Solicitar el nivel de dificultad.
+Solicitar el número de palabras.
+Solicitar las palabras al usuario.
+
+Creación del tablero:
+Inicializar el tablero con letras aleatorias.
+Colocar las palabras según la dificultad.
+
+Modo de juego:
+Preguntar si el usuario desea jugar en consola o en papel.
+Mostrar el tablero.
+
+Resolución:
+Ofrecer opciones de resolución (programa o usuario).
+Implementar la lógica de búsqueda o validación de coordenadas.
+
+Finalización:
+Mostrar resultados.
+Preguntar si desea jugar nuevamente.
+
+
+revisar el rango para el tamaño del tablero en el main
