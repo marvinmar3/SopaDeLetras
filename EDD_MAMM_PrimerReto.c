@@ -36,6 +36,7 @@ void agregarPalabra(struct Nodo **lista, char * palabra);
 bool buscarPalabra(struct Nodo *lista, char *palabra);
 void imprimirLista(struct Nodo *lista);
 void exportarTablero(struct SopaLetras *sopa);
+void insertarPalabraMedio(struct SopaLetras *sopa, char *palabra);
 
 int main(int argc, char const *argv[])
 {
@@ -65,9 +66,19 @@ int main(int argc, char const *argv[])
 
 	//se asigna memoria dinam
 	sopa.matriz= (char **)malloc(N * sizeof(char *));
+	if (sopa.matriz==NULL)
+	{
+		perror("Error al asignar memoria.\n");
+		return 1;
+	}
 	for (int i = 0; i < N; ++i)
 	{
 		sopa.matriz[i] = (char *)malloc(N * sizeof(char));
+		if (sopa.matriz[i]==NULL)
+		{
+			printf("Errorr");
+			return 1;
+		}
 	}
 
 	inicializarTablero(&sopa);
@@ -98,6 +109,7 @@ int main(int argc, char const *argv[])
 			insertarPalabraFacil(&sopa, palabras[i]);
 			break;
 		case 2:
+			insertarPalabraMedio(&sopa, palabras[i]);
 			break;
 		case 3:
 			break;
@@ -242,6 +254,38 @@ void insertarPalabraFacil(struct SopaLetras *sopa, char *palabra)
 	printf("No se pudo insertar la palabra %s\n", palabra);
 }
 
+void insertarPalabraMedio(struct SopaLetras *sopa, char *palabra)
+{
+	int len=0;
+	while(palabra[len]!= '\0')len ++;
+
+	if (len>sopa->N)
+	{
+		return;
+	}
+	int intentos =100;
+
+	while(intentos--)
+	{
+		int direccion = rand() %3; // 0-hori, 1-verti, 2-diago
+		int x=rand() %  (sopa->N - (direccion==2? len:0));
+		int y=rand() %  (sopa->N - (direccion==2? len:0));
+
+		if (espacioDispo(sopa, palabra, x,y,direccion))
+		{
+			for (int i = 0; i < len; ++i)
+			{
+				int nx= (direccion==0)? x+i: (direccion==1) ? x:x+i;
+				int ny= (direccion==0)? y: (direccion==1)? y+i:y+i;
+
+				sopa->matriz[nx][ny]= palabra[i];
+			}
+			return;
+		}
+	}
+	printf("No se pudo insertar la palabra %s\n", palabra);
+}
+
 void convertirMayus(char *palabra)
 {
 	for (int i = 0; i < palabra[i] != '\0'; ++i)
@@ -285,6 +329,12 @@ void rellenarEspacios(struct SopaLetras *sopa)
 void agregarPalabra(struct Nodo **lista, char * palabra)
 {
 	struct Nodo *nuevoNodo = (struct Nodo *)malloc(sizeof(struct Nodo));
+	if (nuevoNodo==NULL)
+	{
+		perror("Error al asignar memoria para el nodo.\n");
+		return;
+	}
+
 	strcpy(nuevoNodo->palabra, palabra);
 	nuevoNodo->siguiente= *lista;
 	*lista= nuevoNodo;
