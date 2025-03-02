@@ -37,6 +37,8 @@ bool buscarPalabra(struct Nodo *lista, char *palabra);
 void imprimirLista(struct Nodo *lista);
 void exportarTablero(struct SopaLetras *sopa);
 void insertarPalabraMedio(struct SopaLetras *sopa, char *palabra);
+void invertirPalabra(char *palabra);
+void insertarPalabraDificil(struct SopaLetras *sopa, char*palabra);
 
 int main(int argc, char const *argv[])
 {
@@ -56,7 +58,7 @@ int main(int argc, char const *argv[])
 
 	printf("Selecciona el nivel de dificultad\n1->Facil\n2->Medio\n3->Dificil😈\n");
 	scanf("%d", &nivel);
-	if(nivel != 1 & nivel != 2 & nivel !=3)
+	if(nivel != 1 && nivel != 2 && nivel !=3)
 	{
 		return 1;
 	}
@@ -117,6 +119,7 @@ int main(int argc, char const *argv[])
 			insertarPalabraMedio(&sopa, palabras[i]);
 			break;
 		case 3:
+			insertarPalabraDificil(&sopa, palabras[i]);
 			break;
 
 		}
@@ -295,6 +298,48 @@ void insertarPalabraMedio(struct SopaLetras *sopa, char *palabra)
 	printf("No se pudo insertar la palabra %s\n", palabra);
 }
 
+void insertarPalabraDificil(struct SopaLetras *sopa, char*palabra)
+{
+	int len=0;
+	while(palabra[len]!='\0') len ++;
+
+	if (len>sopa->N)
+	{
+		return;
+	}
+	int intentos =100;
+	char palabra_invert[len+1];
+	strcpy(palabra_invert, palabra);
+	palabra_invert[len]='\0';
+	invertirPalabra(palabra_invert);
+
+	while(intentos --)
+	{
+		int direccion = rand()% 6; //hori, verti, diag, sus reversos
+
+		int x=rand()%(sopa->N-(direccion==2 || direccion ==5 ? len-1 :0));
+		int y=rand()%(sopa->N-(direccion==2 || direccion ==5 ? len-1 :0));
+
+		char *palabraAUsar=(direccion>=3)? palabra_invert:palabra;
+
+		if (espacioDispo(sopa, palabraAUsar, x, y, direccion))
+		{
+			for (int i = 0; i < len; ++i)
+			{
+				int nx = (direccion == 0 || direccion == 3) ? x + i : (direccion == 1 || direccion == 4) ? x : x + i;
+                int ny = (direccion == 0 || direccion == 3) ? y : (direccion == 1 || direccion == 4) ? y + i : y + i;
+				if (nx<0||nx>= sopa->N|| ny<0 || ny>=sopa->N)
+				{
+					return;
+				}
+				sopa->matriz[nx][ny]= palabraAUsar[i];
+			}
+			return;
+		}
+	}
+	printf("No se pudo insertar la palabra: %s\n", palabra);
+}
+
 void convertirMayus(char *palabra)
 {
 	for (int i = 0; i < palabra[i] != '\0'; ++i)
@@ -312,6 +357,12 @@ bool espacioDispo(struct SopaLetras *sopa, char *palabra, int x, int y, int dire
 	{
 		int nx = direccion ==0 ? x : x +i;
 		int ny = direccion ==1 ? y : y +i;
+
+		//verifica que esten dentro de los indices de la matriz
+		if (nx<0 || nx >= sopa->N || ny <0 || ny >= sopa->N)
+		{
+			return false;
+		}
 
 		if(sopa->matriz[nx][ny] != ' ' && sopa->matriz[nx][ny] != palabra[i])
 		{
@@ -400,4 +451,16 @@ void exportarTablero(struct SopaLetras *sopa)
 	}
 	fclose(archivo);
 	printf("Tablero exportado en sopa_de_letras.txt\n");
+}
+
+void invertirPalabra(char *palabra)
+{
+	int len =0;
+	while(palabra[len]!= '\0') len ++;
+	for (int i = 0; i < len/2 ; ++i)
+	{
+		char temp = palabra[i];
+		palabra[i]= palabra[len -1-i];
+		palabra[len-1-i]=temp;
+	}
 }
