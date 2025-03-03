@@ -34,7 +34,6 @@ bool espacioDispo(struct SopaLetras *sopa, char *palabra, int x, int y, int dire
 void rellenarEspacios(struct SopaLetras *sopa);
 void agregarPalabra(struct Nodo **lista, char * palabra);
 bool buscarPalabra(struct Nodo *lista, char *palabra);
-void imprimirLista(struct Nodo *lista);
 void exportarTablero(struct SopaLetras *sopa);
 void insertarPalabraMedio(struct SopaLetras *sopa, char *palabra);
 void invertirPalabra(char *palabra);
@@ -421,15 +420,6 @@ bool buscarPalabra(struct Nodo *lista, char *palabra)
 		lista = lista->siguiente;
 	}
 	return false;
-}
-
-void imprimirLista(struct Nodo *lista)
-{
-	while(lista != NULL)
-	{
-		printf("%s\n", lista->palabra);
-		lista=lista->siguiente;
-	}
 }
 
 void exportarTablero(struct SopaLetras *sopa)
